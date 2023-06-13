@@ -12,6 +12,7 @@ public class BgmsConfig {
     public static final String USER_LIST = "userList";
     public static final String BUSINESS_LIST = "businessList";
     public static final String TEST = "test";
+    public static final String TEST1 = "test1";
 
 
 }
