@@ -654,6 +654,8 @@
                     if (res.code == 200) {
                         //成功
                         location.reload();
+                    }else {
+                        alert(res.msg);
                     }
                 }
             })
@@ -667,13 +669,32 @@
      * 新增用户的判断函数
      */
     function checkUser1() {
-        let username = document.getElementById("username1");
-        let password = document.getElementById("password1");
+        let username = document.getElementById("username1").value;
+        let password = document.getElementById("password1").value;
+        let tel = document.getElementById("tel1").value;
         if (username == null || username == "") {
+            alert("用户名不能为空")
             return false;
         }
         if (password == null || password == "") {
+            alert("密码不能为空")
             return false;
+        }else {
+            let pswReg=/^[a-zA-Z]\w{5,17}$/
+            if (!pswReg.test(password)){
+                alert("密码格式不正确(以字母开头，长度在6~18之间，只能包含字母、数字和下划线)")
+                return false;
+            }
+        }
+        if (tel == null || tel == "") {
+            alert("手机号不能为空");
+            return false;
+        } else {
+            let telReg = /^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\d{8}$/
+            if (!telReg.test(tel)){
+                alert("手机号格式不合法")
+                return false;
+            }
         }
         return true;
     }

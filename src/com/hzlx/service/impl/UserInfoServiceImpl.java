@@ -3,17 +3,20 @@ package com.hzlx.service.impl;
 import com.hzlx.component.BgmsConfig;
 import com.hzlx.dao.UserInfoDao;
 import com.hzlx.dao.impl.UserInfoDaoImpl;
-import com.hzlx.entity.RoleInfo;
 import com.hzlx.entity.UserInfo;
 import com.hzlx.service.UserInfoService;
+import com.hzlx.utils.BaseDao;
 import com.hzlx.utils.BaseResult;
 import com.hzlx.utils.MD5Utils;
 import com.mysql.cj.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
-public class UserInfoServiceImpl implements UserInfoService {
+public class UserInfoServiceImpl extends BaseDao implements UserInfoService {
 
     //引入dao层，用户查询数据库
     private UserInfoDao userInfoDao= new UserInfoDaoImpl();
@@ -85,19 +88,45 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public String newUser(HttpServletRequest request) {
-        String userName = request.getParameter("username");
-        String password = MD5Utils.encryptMD5(request.getParameter("password"), userName);
-        String nickName = request.getParameter("nickName");
-        String tel = request.getParameter("tel");
-        String address = request.getParameter("address");
-        Integer sex =Integer.parseInt(request.getParameter("sex")) ;
+    public String newUser(HttpServletRequest req,HttpServletResponse resp) {
+        String userName = req.getParameter("username");
+        resp.setContentType("text/html;charset=utf-8");
+
+        String sql="select count(1) AS cont from t_user_info where user_name=?";
+        Map<String, Object> map = selectOneForMap(sql, userName);
+
+        Integer countNum = Integer.parseInt(map.get("cont").toString());
+        if (countNum>0){
+            try {
+                resp.getWriter().write (BaseResult.error(305,"用户名重复"));
+                return "";
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        String password = MD5Utils.encryptMD5(req.getParameter("password"), userName);
+        String nickName = req.getParameter("nickName");
+        String tel = req.getParameter("tel");
+        String address = req.getParameter("address");
+        Integer sex =Integer.parseInt(req.getParameter("sex")) ;
         //TODO 参数校验  如果非空字段为空 给出错误提示
         int rows= userInfoDao.newUserInfoByName(userName,password,nickName,tel,address,sex);
         if (rows>0){
-            return BaseResult.success();
+            try {
+                resp.getWriter().write ( BaseResult.success());
+                return "";
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }else {
-            return BaseResult.error(20002,"新增菜单失败");
+            try {
+                resp.getWriter().write ( BaseResult.error(20002,"新增菜单失败"));
+                return "";
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
     }
 
@@ -152,6 +181,32 @@ public class UserInfoServiceImpl implements UserInfoService {
             return BaseResult.success();
         }else {
             return BaseResult.error(20001,"删除失败");
+        }
+    }
+
+    @Override
+    public String UserInfoRegister(HttpServletRequest req){
+        String userName = req.getParameter("username");
+
+        String sql="select count(1) AS cont from t_user_info where user_name=?";
+        Map<String, Object> map = selectOneForMap(sql, userName);
+
+        Integer countNum = Integer.parseInt(map.get("cont").toString());
+        if (countNum>0){
+                return BaseResult.error(305,"用户名重复了");
+        }
+
+        String password = MD5Utils.encryptMD5(req.getParameter("password"), userName);
+        String nickName = req.getParameter("nickname");
+        String tel = req.getParameter("tel");
+        String address = req.getParameter("address");
+        Integer sex =Integer.parseInt(req.getParameter("sex")) ;
+        //TODO 参数校验  如果非空字段为空 给出错误提示
+        int rows= userInfoDao.newUserInfoByName(userName,password,nickName,tel,address,sex);
+        if (rows>0){
+            return BaseResult.success();
+        }else {
+            return BaseResult.error(305,"注册失败");
         }
     }
 }

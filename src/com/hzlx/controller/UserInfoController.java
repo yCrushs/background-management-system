@@ -1,13 +1,11 @@
 package com.hzlx.controller;
 
-import com.hzlx.annotation.Controller;
-import com.hzlx.annotation.RequestMapping;
-import com.hzlx.annotation.RequestParameter;
-import com.hzlx.annotation.ResponseBody;
+import com.hzlx.annotation.*;
 import com.hzlx.service.UserInfoService;
 import com.hzlx.service.impl.UserInfoServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/api/user")
@@ -50,10 +48,18 @@ public class UserInfoController {
     }
     @RequestMapping("/New")
     @ResponseBody
-    @RequestParameter
-    public String NewUser(HttpServletRequest request){
-        return userInfoService.newUser(request);
+    @HttpServlet
+    public String NewUser(HttpServletRequest request,HttpServletResponse response){
+        return userInfoService.newUser(request,response);
     }
+
+    @RequestMapping("/register")
+    @ResponseBody
+    @RequestParameter
+    public String register(HttpServletRequest req){
+        return userInfoService.UserInfoRegister(req);
+    }
+
     @RequestMapping("/change")
     @ResponseBody
     @RequestParameter

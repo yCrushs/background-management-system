@@ -2,6 +2,7 @@ package com.hzlx.service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface UserInfoService {
 
@@ -19,11 +20,13 @@ public interface UserInfoService {
 
     String editUser(HttpServletRequest request);
 
-    String newUser(HttpServletRequest request);
+    String newUser(HttpServletRequest request,HttpServletResponse response);
 
     String qiyongUserInfoByid(HttpServletRequest request);
 
     String deleteUser(HttpServletRequest request);
 
     String userDeleteBtn(HttpServletRequest request);
+
+    String UserInfoRegister(HttpServletRequest req);
 }

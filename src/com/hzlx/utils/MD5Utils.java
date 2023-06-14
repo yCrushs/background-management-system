@@ -152,7 +152,7 @@ public class MD5Utils {
     //测试加密算法是否正常
     public static void main(String[] args) {
 //        System.out.println(encryptMD5("123456", "hpfd_wt"));
-        System.out.println(encryptMD5("hmj", "hmj"));
+        System.out.println(encryptMD5("lht", "lht"));
     }
 }
 
